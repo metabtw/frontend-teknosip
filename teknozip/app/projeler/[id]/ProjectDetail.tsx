@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Header from '../../../components/Header';
-import Footer from '../../../components/Footer';
+import { Footer } from '@/components/Footer';
 
-export default function ProjectDetail({ projectId }) {
+export default function ProjectDetail({ projectId }: { projectId: string }) {
   const [showContactForm, setShowContactForm] = useState(false);
 
   const projects = [
@@ -118,7 +118,7 @@ export default function ProjectDetail({ projectId }) {
 
   const project = projects.find(p => p.id === parseInt(projectId)) || projects[0];
 
-  const handleContactSubmit = (e) => {
+  const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setShowContactForm(false);
     alert('Mesajınız gönderildi! Proje sahibi sizinle iletişime geçecektir.');

@@ -9,7 +9,7 @@ import Stats from '../components/Stats';
 import ProjectsSlider from '../components/ProjectsSlider';
 import CompanyLogos from '../components/CompanyLogos';
 import ContactForm from '../components/ContactForm';
-import Footer from '../components/Footer';
+import { Footer } from '@/components/Footer';
 
 export default function Home() {
   return (

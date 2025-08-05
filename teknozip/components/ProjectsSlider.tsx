@@ -47,6 +47,46 @@ export default function ProjectsSlider() {
       budget: "₺750.000",
       status: "Aktif",
       image: "https://readdy.ai/api/search-image?query=modern%20renewable%20energy%20solar%20panels%20and%20wind%20turbines%2C%20sustainable%20energy%20technology%2C%20green%20energy%20solutions%2C%20clean%20environmental%20technology%2C%20modern%20solar%20farm%20installation%2C%20professional%20renewable%20energy%20equipment&width=400&height=300&seq=project-4&orientation=landscape"
+    },
+    {
+      id: 5,
+      title: "Blockchain Tabanlı Lojistik",
+      company: "LogiChain Solutions",
+      description: "Blockchain teknolojisi ile güvenli ve şeffaf lojistik takip sistemi geliştirme projesi.",
+      support: "KOSGEB Ar-Ge Desteği",
+      budget: "₺520.000",
+      status: "Aktif",
+      image: "https://readdy.ai/api/search-image?query=modern%20logistics%20blockchain%20technology%20with%20digital%20supply%20chain%20tracking%2C%20secure%20transportation%20network%2C%20high-tech%20logistics%20center%2C%20digital%20cargo%20tracking%20system%2C%20professional%20logistics%20technology%20infrastructure&width=400&height=250&seq=projects-5&orientation=landscape"
+    },
+    {
+      id: 6,
+      title: "Yapay Zeka Destekli Eğitim",
+      company: "EduAI Technologies",
+      description: "Kişiselleştirilmiş öğrenme deneyimi sunan yapay zeka destekli eğitim platformu.",
+      support: "KOSGEB Teknoloji Geliştirme",
+      budget: "₺380.000",
+      status: "Aktif",
+      image: "https://readdy.ai/api/search-image?query=modern%20artificial%20intelligence%20education%20technology%2C%20personalized%20learning%20platform%20interface%2C%20digital%20classroom%20with%20AI%20technology%2C%20educational%20technology%20innovation%2C%20modern%20e-learning%20system%2C%20professional%20educational%20software&width=400&height=250&seq=projects-6&orientation=landscape"
+    },
+    {
+      id: 7,
+      title: "Fintech Ödeme Sistemi",
+      company: "PayTech Innovations",
+      description: "Güvenli ve hızlı dijital ödeme çözümleri sunan fintech platformu geliştirme projesi.",
+      support: "KOSGEB Girişimcilik",
+      budget: "₺650.000",
+      status: "Aktif",
+      image: "https://readdy.ai/api/search-image?query=modern%20fintech%20payment%20system%20technology%2C%20secure%20digital%20payment%20interface%2C%20financial%20technology%20innovation%2C%20mobile%20payment%20application%2C%20professional%20financial%20software%20development%2C%20clean%20payment%20technology%20design&width=400&height=250&seq=projects-7&orientation=landscape"
+    },
+    {
+      id: 8,
+      title: "Akıllı Şehir Altyapı",
+      company: "SmartCity Solutions",
+      description: "Şehir altyapısını dijitalleştiren ve optimize eden akıllı şehir teknolojileri projesi.",
+      support: "KOSGEB Ar-Ge Desteği",
+      budget: "₺890.000",
+      status: "Aktif",
+      image: "https://readdy.ai/api/search-image?query=modern%20smart%20city%20infrastructure%20with%20digital%20technology%2C%20urban%20IoT%20sensors%20and%20smart%20systems%2C%20futuristic%20city%20technology%2C%20intelligent%20urban%20planning%2C%20advanced%20city%20infrastructure%2C%20professional%20smart%20city%20development&width=400&height=250&seq=projects-8&orientation=landscape"
     }
   ];
 
@@ -118,7 +158,7 @@ export default function ProjectsSlider() {
                         </span>
                       </div>
                       <Link
-                        href={`/proje/${project.id}`}
+                        href={`/projeler/${project.id}`}
                         className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors whitespace-nowrap inline-block text-center"
                       >
                         Proje Detayı

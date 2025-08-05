@@ -6,12 +6,14 @@ import { useAuth } from '@/hooks/useAuth'; // Veya '@/context/AuthContext' → d
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, role, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const getDashboardLink = () => {
-    if (role === 'Admin') return '/admin/dashboard';           // Süper admin
-    if (role === 'CompanyAdmin') return '/admin/company-admin/dashboard'; // Şirket admini
-    return '/user/dashboard'; // Varsayılan (isteğe bağlı)
+    if (!user) return '/';
+    if (user.role === 'super-admin') return '/admin/dashboard';
+    if (user.role === 'company-admin') return '/company-admin/dashboard';
+    if (user.role === 'employee') return '/employee/dashboard';
+    return '/';
   };
 
   return (
@@ -31,13 +33,10 @@ export default function Header() {
             <Link href="/sorunlar" className="text-gray-700 hover:text-blue-600">Sorunlar</Link>
             <Link href="/cozumler" className="text-gray-700 hover:text-blue-600">Çözümler</Link>
             <Link href="/kurumlar" className="text-gray-700 hover:text-blue-600">Kurumlar</Link>
+            <Link href="/sirketler" className="text-gray-700 hover:text-blue-600">Şirketler</Link>
 
             {user ? (
               <>
-                <div className="text-sm text-gray-600">
-                  Hoş geldin, <span className="font-medium">{user.email}</span>
-                </div>
-                <div className="text-sm text-gray-500">Rol: {role}</div>
                 <Link 
                   href={getDashboardLink()} 
                   className="text-blue-600 hover:underline font-medium"
@@ -80,11 +79,12 @@ export default function Header() {
               <Link href="/sorunlar" className="px-3 py-2 text-gray-700 hover:text-blue-600">Sorunlar</Link>
               <Link href="/cozumler" className="px-3 py-2 text-gray-700 hover:text-blue-600">Çözümler</Link>
               <Link href="/kurumlar" className="px-3 py-2 text-gray-700 hover:text-blue-600">Kurumlar</Link>
+              <Link href="/sirketler" className="px-3 py-2 text-gray-700 hover:text-blue-600">Şirketler</Link>
 
               {user ? (
                 <>
                   <div className="px-3 text-sm text-gray-600">Hoş geldin, {user.email}</div>
-                  <div className="px-3 text-sm text-gray-500">Rol: {role}</div>
+                  <div className="px-3 text-sm text-gray-500">Rol: {user.role}</div>
                   <Link
                     href={getDashboardLink()}
                     className="px-3 text-blue-600 hover:underline font-medium"

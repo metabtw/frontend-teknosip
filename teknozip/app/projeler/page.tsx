@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import { Footer } from '@/components/Footer';
 import ProjectFilters from './ProjectFilters';
 import ProjectCard from './ProjectCard';
 import ProjectHero from './ProjectHero';
@@ -11,7 +11,22 @@ import { Roles } from '@/constants/roles';
 
 export default function ProjectsPage() {
   
-  const [filteredProjects, setFilteredProjects] = useState([]);
+  interface Project {
+    id: number;
+    title: string;
+    company: string;
+    description: string;
+    support: string;
+    category: string;
+    budget: string;
+    status: string;
+    deadline: string;
+    location: string;
+    tags: string[];
+    image: string;
+  }
+
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const projectsPerPage = 9;
@@ -187,16 +202,25 @@ export default function ProjectsPage() {
     }
   ];
 
-  const handleFilter = (filters) => {
+  interface Filters {
+    search?: string;
+    category?: string;
+    location?: string;
+    status?: string;
+    support?: string;
+  }
+
+  const handleFilter = (filters: Filters) => {
     setLoading(true);
     
     let filtered = projects;
 
     if (filters.search) {
+      const searchTerm = filters.search.toLowerCase();
       filtered = filtered.filter(project => 
-        project.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-        project.company.toLowerCase().includes(filters.search.toLowerCase()) ||
-        project.description.toLowerCase().includes(filters.search.toLowerCase())
+        project.title.toLowerCase().includes(searchTerm) ||
+        project.company.toLowerCase().includes(searchTerm) ||
+        project.description.toLowerCase().includes(searchTerm)
       );
     }
 

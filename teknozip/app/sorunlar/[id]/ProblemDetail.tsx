@@ -4,10 +4,31 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '../../../components/Header';
-import Footer from '../../../components/Footer';
+import { Footer } from '@/components/Footer';
+
+interface Problem {
+  id: number;
+  title: string;
+  description: string;
+  fullDescription: string;
+  category: string;
+  company: string;
+  location: string;
+  budget: string;
+  urgency: string;
+  deadline: string;
+  skills: string[];
+  createdAt: string;
+  requirements: string[];
+  benefits: string[];
+  contactPerson: string;
+  contactEmail: string;
+  contactPhone: string;
+  image: string;
+}
 
 export default function ProblemDetail({ problemId }: { problemId: string }) {
-  const [problem, setProblem] = useState(null);
+  const [problem, setProblem] = useState<Problem | null>(null);
   const [isInterested, setIsInterested] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
 
@@ -79,7 +100,7 @@ export default function ProblemDetail({ problemId }: { problemId: string }) {
           "Güvenli veri yönetimi"
         ],
         contactPerson: "Dr. Zeynep Kaya",
-        contactEmail: "zeynep@medtechsolutions.com",
+        contactEmail: "zeynep@medtech.com",
         contactPhone: "+90 312 555 0456",
         image: "https://readdy.ai/api/search-image?query=healthcare%20mobile%20application%20interface%20for%20hospital%20management%20system%2C%20medical%20records%20and%20patient%20data%20on%20tablet%20screen%2C%20doctor%20using%20healthcare%20technology%2C%20clean%20medical%20environment%20with%20white%20background%2C%20professional%20healthcare%20software%20design&width=800&height=500&seq=problem-detail-2&orientation=landscape"
       }
@@ -91,7 +112,7 @@ export default function ProblemDetail({ problemId }: { problemId: string }) {
     }
   }, [problemId]);
 
-  const getUrgencyColor = (urgency) => {
+  const getUrgencyColor = (urgency: string) => {
     switch(urgency) {
       case 'Acil': return 'bg-red-100 text-red-800';
       case 'Orta': return 'bg-yellow-100 text-yellow-800';
@@ -100,7 +121,7 @@ export default function ProblemDetail({ problemId }: { problemId: string }) {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('tr-TR', {
       year: 'numeric',
       month: 'long',
@@ -157,12 +178,12 @@ export default function ProblemDetail({ problemId }: { problemId: string }) {
           <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-8">
             <div className="relative">
               <img 
-                src={problem.image} 
-                alt={problem.title}
+                src={problem?.image || ''}
+                alt={problem?.title || ''}
                 className="w-full h-64 object-cover object-top"
               />
               <div className="absolute top-6 left-6">
-                <span className={`px-3 py-1 text-sm font-semibold rounded-full ${getUrgencyColor(problem.urgency)}`}>
+                <span className={`px-3 py-1 text-sm font-semibold rounded-full ${getUrgencyColor(problem?.urgency || '')}`}>
                   {problem.urgency}
                 </span>
               </div>

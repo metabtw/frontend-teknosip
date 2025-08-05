@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import { Footer } from '@/components/Footer';
 import SolutionsHero from './SolutionsHero';
 import SolutionsFilters from './SolutionsFilters';
 import SolutionCard from './SolutionCard';

@@ -1,187 +1,188 @@
 'use client';
+
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import { AuthResponse } from '@/types/response';
-import { updateCompanyProfile } from '@/utils/api';
+import { useRouter } from 'next/navigation';
 
-interface AuthContextType {
-  user: any;
-  role: string | null;
-  token: string | null;
-  refreshToken: string | null;
-  login: (authData: AuthResponse) => void;
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: 'super-admin' | 'company-admin' | 'employee';
+  companyId?: string;
+  companyName?: string;
+  status?: 'approved' | 'pending' | 'rejected';
+  position?: string;
+  permissions?: string[];
+};
+
+type AuthContextType = {
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  refreshAuth: () => Promise<void>;
+  registerCompany: (companyData: CompanyRegistration) => Promise<void>;
+  addEmployee: (employeeData: EmployeeRegistration) => Promise<void>;
   loading: boolean;
-  isAuthenticated: boolean;
-  updateProfile: (data: {
-    companyName?: string;
-    contactPerson?: string;
-    email?: string;
-    password?: string;
-  }) => Promise<void>;
-}
+};
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+type CompanyRegistration = {
+  name: string;
+  email: string;
+  password: string;
+  companyName: string;
+};
+
+type EmployeeRegistration = {
+  name: string;
+  email: string;
+  password: string;
+  position: string;
+  permissions: string[];
+};
+
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('accessToken');
-    const storedRefreshToken = localStorage.getItem('refreshToken');
-    
-    if (storedToken && storedRefreshToken) {
-      try {
-        const decoded = jwtDecode(storedToken);
-        setToken(storedToken);
-        setRefreshToken(storedRefreshToken);
-        setUser(decoded);
-      } catch (err) {
-        console.error("Token decode error:", err);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-      }
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser) as User;
+      setUser(parsedUser);
     }
     setLoading(false);
   }, []);
 
-  const login = (authData: AuthResponse) => {
-    try {
-      const { accessToken, refreshToken } = authData;
-      
-      if (!accessToken || !refreshToken) {
-        throw new Error("Token bilgileri eksik");
-      }
+  const login = async (email: string, password: string) => {
+    // Mock API call
+    return new Promise<void>((resolve, reject) => {
+      setTimeout(() => {
+        const mockUsers = [
+          {
+            id: '1',
+            name: 'Super Admin',
+            email: 'admin@example.com',
+            role: 'super-admin',
+          },
+          {
+            id: '2',
+            name: 'Company Admin',
+            email: 'company@example.com',
+            role: 'company-admin',
+            companyId: 'comp-123',
+            companyName: 'Technology Solutions Inc.',
+            status: 'approved'
+          },
+          {
+            id: '3',
+            name: 'Employee',
+            email: 'employee@example.com',
+            role: 'employee',
+            companyId: 'comp-123',
+            companyName: 'Technology Solutions Inc.',
+            position: 'Software Developer',
+            permissions: ['task_view', 'task_update']
+          }
+        ];
 
-      const decodedAccess = jwtDecode(accessToken);
-      
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      
-      setToken(accessToken);
-      setRefreshToken(refreshToken);
-      setUser(decodedAccess);
-      setLoading(false);
-    } catch (err) {
-      console.error("Token işleme hatası:", err);
-      throw new Error("Oturum açma işlemi başarısız oldu");
-    }
+        const foundUser = mockUsers.find(
+          u => u.email === email && password === 'password123'
+        );
+
+        if (foundUser) {
+          setUser({...foundUser});
+          localStorage.setItem('user', JSON.stringify(foundUser));
+          
+          // Role based routing
+          switch (foundUser.role) {
+            case 'super-admin':
+              router.push('/admin/dashboard');
+              break;
+            case 'company-admin':
+              if (foundUser.status === 'approved') {
+                router.push('/company-admin/dashboard');
+              } else {
+                reject(new Error('Şirket hesabınız henüz onaylanmamış'));
+                return;
+              }
+              break;
+            case 'employee':
+              router.push('/employee/dashboard');
+              break;
+            default:
+              reject(new Error('Geçersiz kullanıcı rolü'));
+              return;
+          }
+          
+          resolve();
+        } else {
+          reject(new Error('Geçersiz e-posta veya şifre'));
+        }
+      }, 1000);
+    });
   };
 
   const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    setToken(null);
-    setRefreshToken(null);
     setUser(null);
-    setLoading(false);
+    localStorage.removeItem('user');
+    router.push('/auth/login');
   };
 
-  const refreshAuth = async () => {
-    try {
-      if (!refreshToken) throw new Error("Refresh token bulunamadı");
-      
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Auth/refresh-token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${refreshToken}`
-        },
-        body: JSON.stringify({ refreshToken })
-      });
-
-      const data = await response.json();
-      
-      if (response.ok && data.isSuccess) {
-        login({
-          isSuccess: true,
-          message: data.message,
-          accessToken: data.data.accessToken,
-          refreshToken: data.data.refreshToken
-        });
-      } else {
-        logout();
-      }
-    } catch (err) {
-      console.error("Token yenileme hatası:", err);
-      logout();
-    }
+  const registerCompany = async (companyData: CompanyRegistration) => {
+    // Mock registration
+    return new Promise<void>((resolve, reject) => {
+      setTimeout(() => {
+        // Şirket kaydı oluştur (pending statüsünde)
+        const newCompany = {
+          id: `comp-${Date.now()}`,
+          name: companyData.name,
+          email: companyData.email,
+          role: 'company-admin',
+          companyName: companyData.companyName,
+          status: 'pending',
+        };
+        console.log('Şirket kaydı oluşturuldu (onay bekliyor):', newCompany);
+        resolve();
+      }, 1500);
+    });
   };
 
-  const updateProfile = async ( {
-    companyName,
-    contactPerson,
-    email,
-    password,
-  }: {
-    companyName?: string;
-    contactPerson?: string;
-    email?: string;
-    password?: string;
-  }) => {
-    if (!token) {
-      throw new Error("Yetkilendirme hatası: Erişim token'ı bulunamadı");
-    }
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/Company/update-profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          companyName,
-          contactPerson,
-          email,
-          password,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Profil güncellenemedi");
+  const addEmployee = async (employeeData: EmployeeRegistration) => {
+    // Mock employee registration
+    return new Promise<void>((resolve, reject) => {
+      if (!user || user.role !== 'company-admin') {
+        reject(new Error('Çalışan ekleme yetkisi yok'));
+        return;
       }
 
-      // Kullanıcı bilgilerini güncelle
-      setUser((prevUser: any) => ({
-        ...prevUser,
-        companyName: companyName || prevUser.companyName,
-        contactPerson: contactPerson || prevUser.contactPerson,
-        email: email || prevUser.email,
-      }));
-
-      // Opsiyonel: Eğer JWT içinde bu bilgiler varsa, yeni token alınmalı
-      // Şimdilik sadece frontend state’i güncelliyoruz
-    } catch (err) {
-      console.error("Profil güncelleme hatası:", err);
-      throw err;
-    }
+      setTimeout(() => {
+        const newEmployee = {
+          id: `emp-${Date.now()}`,
+          name: employeeData.name,
+          email: employeeData.email,
+          role: 'employee',
+          companyId: user.companyId,
+          companyName: user.companyName,
+          position: employeeData.position,
+          permissions: employeeData.permissions,
+        };
+        console.log('Çalışan eklendi:', newEmployee);
+        resolve();
+      }, 1500);
+    });
   };
-
-  const isAuthenticated = !!token && !!refreshToken;
-  const role = user?.role || null;
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        role,
-        token,
-        refreshToken,
-        login,
-        logout,
-        refreshAuth,
-        loading,
-        isAuthenticated,
-        updateProfile, // ✅ Provider'a ekledik
-      }}
-    >
+    <AuthContext.Provider value={{ 
+      user, 
+      login, 
+      logout, 
+      registerCompany, 
+      addEmployee,
+      loading 
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -189,10 +190,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
-
-export { AuthContext };

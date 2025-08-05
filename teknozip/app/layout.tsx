@@ -1,10 +1,13 @@
+'use client';
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pacifico } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from '@/context/AuthContext';
 import 'iconify-icon/dist/iconify-icon.min.js';
-
-
+import { useEffect } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const pacifico = Pacifico({
   weight: '400',
@@ -23,16 +26,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "Teknozip",
-  description: "Giriş / Kayıt sistemi",
-};
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    // Route değişimini izle
+  }, [pathname, searchParams]);
+
   return (
     <html lang="tr">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable}`}>
+      <body className="w-full">
         <AuthProvider>
+          <LoadingSpinner />
           {children}
         </AuthProvider>
       </body>

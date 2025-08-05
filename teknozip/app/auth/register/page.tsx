@@ -3,17 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { registerCompany } from "@/utils/api";
+import Header from '@/components/Header';
+
 
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
+    type: "", // Kurum veya şirket seçimi
     companyName: "",
-    email: "", // Şirket emaili eklendi
+    email: "",
     phoneNumber: "",
     taxNumber: "",
     industry: "",
     expertiseAreas: "",
-    experienceYear: 1, // Varsayılan değer 1 olarak ayarlandı
+    experienceYear: 1,
     adminFirstName: "",
     adminLastName: "",
     adminEmail: "",
@@ -26,7 +29,7 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -46,8 +49,9 @@ export default function RegisterPage() {
   
     // Güncellenmiş zorunlu alan listesi
     const requiredFields = [
+      "type",
       "companyName",
-      "email", // Şirket emaili eklendi
+      "email",
       "phoneNumber",
       "taxNumber",
       "industry",
@@ -102,80 +106,90 @@ export default function RegisterPage() {
   
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Şirket Kayıt Formu</h1>
-
-      {error && (
-        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
-          <p>{error}</p>
-        </div>
-      )}
-
-<form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit} className="min-h-screen bg-gray-50">
+      <Header />
+      <div className="max-w-7xl mx-auto p-6 my-8">
+        <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">Şirket Kayıt Formu</h1>
+        <div className="max-w-7xl mx-auto">
+        <div className="space-y-12">
           {/* Şirket Bilgileri */}
-          <div className="space-y-4">
-            <h2 className="font-semibold text-lg">Şirket Bilgileri</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white p-6 rounded-lg shadow-sm">
+            <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200 text-gray-700 col-span-full">Kuruluş Bilgileri</h2>
 
             <div>
-              <label className="block mb-1">Şirket Adı*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Kuruluş Tipi*</label>
+              <select
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+              >
+                <option value="">Kuruluş tipini seçin</option>
+                <option value="şirket">Şirket/Firma</option>
+                <option value="kurum">Kurum</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">{formData.type === "kurum" ? "Kurum" : "Şirket"} Adı*</label>
               <input
                 name="companyName"
                 value={formData.companyName}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
             
             <div>
-              <label className="block mb-1">Şirket E-posta*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Şirket E-posta*</label>
               <input
                 name="email"
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
             
 
             <div>
-              <label className="block mb-1">Vergi No*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Vergi No*</label>
               <input
                 name="taxNumber"
                 value={formData.taxNumber}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
 
             <div>
-              <label className="block mb-1">Sektör*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Sektör*</label>
               <input
                 name="industry"
                 value={formData.industry}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
 
             <div>
-              <label className="block mb-1">Uzmanlık Alanları*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Uzmanlık Alanları*</label>
               <input
                 name="expertiseAreas"
                 value={formData.expertiseAreas}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
 
             <div>
-              <label className="block mb-1">Deneyim Yılı*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Deneyim Yılı*</label>
               <input
                 name="experienceYear"
                 type="number"
@@ -183,107 +197,108 @@ export default function RegisterPage() {
                 value={formData.experienceYear}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
           </div>
-
           {/* Adres ve Admin Bilgileri */}
-          <div className="space-y-4">
-            <h2 className="font-semibold text-lg">Adres Bilgileri</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white p-6 rounded-lg shadow-sm">
+             <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200 text-gray-700 col-span-full">Adres Bilgileri</h2>
             <div>
-              <label className="block mb-1">Şehir*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Şehir*</label>
               <input
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
             <div>
-              <label className="block mb-1">İlçe*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">İlçe*</label>
               <input
                 name="district"
                 value={formData.district}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
             <div>
-              <label className="block mb-1">Adres Satırı*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Adres Satırı*</label>
               <input
                 name="addressLine"
                 value={formData.addressLine}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
             <div>
-              <label className="block mb-1">Posta Kodu</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Posta Kodu</label>
               <input
                 name="postalCode"
                 value={formData.postalCode}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
-            <h2 className="font-semibold text-lg pt-4">Yönetici Bilgileri</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white p-6 rounded-lg shadow-sm">
+             <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200 text-gray-700 col-span-full">Yönetici Bilgileri</h2>
             <div>
-              <label className="block mb-1">Ad*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Ad*</label>
               <input
                 name="adminFirstName"
                 value={formData.adminFirstName}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
             <div>
-              <label className="block mb-1">Soyad*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Soyad*</label>
               <input
                 name="adminLastName"
                 value={formData.adminLastName}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
             <div>
-              <label className="block mb-1">E-posta*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">E-posta*</label>
               <input
                 name="adminEmail"
                 type="email"
                 value={formData.adminEmail}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
               />
             </div>
             
             <div>
-              <label className="block mb-1">Telefon Numarası*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Telefon Numarası*</label>
               <input
                 name="phoneNumber"
                 type="tel"
                 value={formData.phoneNumber}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
                 placeholder="5XXXXXXXXX"
               />
             </div>
             <div>
-              <label className="block mb-1">Admin Şifresi*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Admin Şifresi*</label>
               <input
                 name="adminPassword"
                 type="password"
                 value={formData.adminPassword}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
                 placeholder="En az bir büyük harf içermeli"
               />
             </div>
@@ -293,11 +308,12 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
+          className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center text-lg font-semibold transition-colors duration-200 mt-8"
         >
           {isLoading ? "Kayıt Olunuyor..." : "Kayıt Ol"}
         </button>
-      </form>
-    </div>
+        </div>
+      </div>
+    </form>
   );
 }

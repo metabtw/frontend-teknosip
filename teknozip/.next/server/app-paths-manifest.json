@@ -1,6 +1,6 @@
 {
-  "/hakkimizda/page": "app/hakkimizda/page.js",
-  "/hizmetler/page": "app/hizmetler/page.js",
-  "/portfolyo/page": "app/portfolyo/page.js",
-  "/iletisim/page": "app/iletisim/page.js"
+  "/page": "app/page.js",
+  "/sorun-paylas/page": "app/sorun-paylas/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/sorunlar/page": "app/sorunlar/page.js"
 }

@@ -2,8 +2,10 @@
 'use client';
 
 import Link from 'next/link';
+import { Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="bg-gray-900 text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,22 +22,22 @@ export default function Footer() {
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <div className="w-6 h-6 flex items-center justify-center">
-                  <i className="ri-facebook-fill text-xl"></i>
+                  <Facebook className={cn("w-6", "h-6")} />
                 </div>
               </a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <div className="w-6 h-6 flex items-center justify-center">
-                  <i className="ri-twitter-fill text-xl"></i>
+                  <Twitter className={cn("w-6", "h-6")} />
                 </div>
               </a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <div className="w-6 h-6 flex items-center justify-center">
-                  <i className="ri-linkedin-fill text-xl"></i>
+                  <Linkedin className={cn("w-6", "h-6")} />
                 </div>
               </a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <div className="w-6 h-6 flex items-center justify-center">
-                  <i className="ri-instagram-fill text-xl"></i>
+                  <Instagram className={cn("w-6", "h-6")} />
                 </div>
               </a>
             </div>

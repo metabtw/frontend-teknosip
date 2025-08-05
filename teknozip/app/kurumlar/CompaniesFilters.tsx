@@ -18,7 +18,7 @@ export default function CompaniesFilters({ onFilter }) {
   };
 
   return (
-    <div className="bg-white border-b border-gray-200 sticky top-16 z-40">
+    <div className="bg-white border-b border-gray-200 top-16 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div>

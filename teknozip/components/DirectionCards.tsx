@@ -23,8 +23,9 @@ export default function DirectionCards() {
       title: "İlanlar",
       description: "Sektörünüzle ilgili iş ilanlarını ve işbirliği fırsatlarını keşfedin.",
       icon: "ri-megaphone-line",
-      href: "/ilanlar",
-      color: "bg-purple-50 border-purple-200 hover:bg-purple-100"
+      href: "/sorunlar",
+      color: "bg-green-50 border-green-200 hover:bg-green-100"
+
     }
   ];
 
