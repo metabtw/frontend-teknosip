@@ -9,7 +9,6 @@ import Header from '@/components/Header';
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    type: "", // Kurum veya şirket seçimi
     companyName: "",
     email: "",
     phoneNumber: "",
@@ -41,15 +40,14 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
 
-    const passwordRegex = /^(?=.*[A-Z]).{6,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{6,}$/;
     if (!passwordRegex.test(formData.adminPassword)) {
-      setError('Şifre en az bir büyük harf ve minimum 6 karakter olmalıdır');
+      setError('Şifre en az bir büyük harf, bir özel karakter ve minimum 6 karakter olmalıdır');
       return;
     }
   
     // Güncellenmiş zorunlu alan listesi
     const requiredFields = [
-      "type",
       "companyName",
       "email",
       "phoneNumber",
@@ -117,22 +115,7 @@ export default function RegisterPage() {
             <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200 text-gray-700 col-span-full">Kuruluş Bilgileri</h2>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">Kuruluş Tipi*</label>
-              <select
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                required
-                className="w-full p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
-              >
-                <option value="">Kuruluş tipini seçin</option>
-                <option value="şirket">Şirket/Firma</option>
-                <option value="kurum">Kurum</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block mb-2 text-sm font-medium text-gray-700">{formData.type === "kurum" ? "Kurum" : "Şirket"} Adı*</label>
+              <label className="block mb-2 text-sm font-medium text-gray-700">Şirket Adı*</label>
               <input
                 name="companyName"
                 value={formData.companyName}

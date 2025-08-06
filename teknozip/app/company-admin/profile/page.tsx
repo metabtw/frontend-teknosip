@@ -43,7 +43,7 @@ export default function CompanyProfilePage() {
   };
 
   return (
-    <RoleBasedWrapper allowedRoles={['company-admin']}>
+    <RoleBasedWrapper allowedRoles={['companyadmin']}>
       <div className="space-y-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">

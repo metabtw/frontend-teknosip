@@ -7,18 +7,28 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 type RoleBasedWrapperProps = {
   children: React.ReactNode;
-  allowedRoles: Array<'super-admin' | 'company-admin' | 'employee'>;
+  allowedRoles: Array<'superadmin' | 'companyadmin' | 'employee'>;
 };
 
 const RoleBasedWrapper = ({ children, allowedRoles }: RoleBasedWrapperProps) => {
-  const { user, loading } = useAuth();
+  const { user, loading, isTokenValid } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth/login');
+    // Token geçerliliğini kontrol et
+    if (!loading) {
+      if (!user || !isTokenValid()) {
+        router.push('/auth/login');
+        return;
+      }
+      
+      // Rol kontrolü
+      if (!allowedRoles.includes(user.role)) {
+        router.push('/403');
+        return;
+      }
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, allowedRoles, isTokenValid]);
 
   if (loading || !user) {
     return <LoadingSpinner />;

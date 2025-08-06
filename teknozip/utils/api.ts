@@ -74,7 +74,10 @@ export const registerCompany = async (formData: any) => {
       const errorData = await response.json();
       if (errorData?.errors) {
         const errorMessages = Object.entries(errorData.errors)
-          .map(([key, values]) => `${key}: ${(values as string[]).join(', ')}`)
+          .map(([key, values]) => {
+            const valueStr = Array.isArray(values) ? values.join(', ') : String(values);
+            return `${key}: ${valueStr}`;
+          })
           .join('\n');
         throw new Error(errorMessages);
       }

@@ -17,7 +17,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
 
   const getMenuItems = () => {
     const commonItems = [
-      { name: 'Dashboard', href: `/${user?.role}/dashboard`, icon: 'solar:chart-bold' },
+      { name: 'Dashboard', href: '/admin/dashboard', icon: 'solar:chart-bold' },
     ];
 
     if (user?.role === 'super-admin') {
@@ -25,6 +25,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
         ...commonItems,
         { name: 'Şirketler', href: '/admin/companies', icon: 'solar:buildings-bold' },
         { name: 'Kurumlar', href: '/admin/institutions', icon: 'solar:university-bold' },
+        { name: 'Kategoriler', href: '/admin/categories', icon: 'solar:folder-bold' },
         { name: 'Destek Talepleri', href: '/admin/support-requests', icon: 'solar:chat-square-call-bold' },
         { name: 'İlanlar', href: '/admin/job-postings', icon: 'solar:document-bold' },
         { name: 'Kullanıcılar', href: '/admin/users', icon: 'solar:users-group-rounded-bold' },

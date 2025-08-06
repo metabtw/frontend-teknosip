@@ -21,8 +21,10 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-    } catch (err) {
-      setError('Geçersiz email veya şifre');
+      // Login başarılı, AuthContext otomatik yönlendirme yapacak
+    } catch (err: any) {
+      setError(err.message || 'Giriş sırasında bir hata oluştu');
+    } finally {
       setLoading(false);
     }
   };

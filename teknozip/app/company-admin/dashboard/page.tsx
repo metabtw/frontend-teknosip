@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
-import RoleBasedWrapper from '@/components/admin/RoleBasedWrapper';
+import RoleBasedWrapper from '@/components/RoleBasedWrapper';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Icon } from '@iconify/react';
