@@ -1,0 +1,30 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.card {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card h3 {
+    margin-top: 0;
+  }
+  
+  .card button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+  }
+  
+  .card button:hover {
+    background-color: #0056b3;
+  }
