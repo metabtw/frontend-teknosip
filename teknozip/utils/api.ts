@@ -94,6 +94,63 @@ export const registerCompany = async (formData: any) => {
   }
 };
 
+export const registerInstitution = async (formData: any) => {
+  try {
+    const payload = {
+      IntitutionName: formData.institutionName,
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      website: formData.website,
+      type: Number(formData.type),
+      institutionCode: formData.institutionCode,
+      officialTitle: formData.officialTitle,
+      authorityName: formData.authorityName,
+      authorityTitle: formData.authorityTitle,
+      adminFirstName: formData.adminFirstName,
+      adminLastName: formData.adminLastName,
+      adminEmail: formData.adminEmail,
+      adminPassword: formData.adminPassword,
+      city: formData.city,
+      district: formData.district,
+      addressLine: formData.addressLine,
+      postalCode: formData.postalCode
+    };
+
+    console.log("Gönderilen kurum verisi:", payload);
+
+    const response = await fetch(`${BASE_URL}/auth/register-Institution`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      if (errorData?.errors) {
+        const errorMessages = Object.entries(errorData.errors)
+          .map(([key, values]) => {
+            const valueStr = Array.isArray(values) ? values.join(', ') : String(values);
+            return `${key}: ${valueStr}`;
+          })
+          .join('\n');
+        throw new Error(errorMessages);
+      }
+      throw new Error(errorData?.message || 'Kurum kaydı başarısız');
+    }
+
+    return { isSuccess: true };
+  } catch (error: any) {
+    console.error('Institution registration error:', error);
+    return { 
+      isSuccess: false, 
+      message: error.message || 'Kurum kaydı sırasında bir hata oluştu' 
+    };
+  }
+};
+
 // Süper Admin için şirket onaylama
 export const approveCompany = async (companyId: string, token: string) => {
   try {

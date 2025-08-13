@@ -72,7 +72,7 @@ const CategoryDeleteModal: React.FC<CategoryDeleteModalProps> = ({
   const confirmText = isHardDelete ? 'Kalıcı Olarak Sil' : 'Pasif Yap';
   const iconColor = isHardDelete ? 'text-red-600' : 'text-yellow-600';
   const buttonColor = isHardDelete 
-    ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+    ? 'bg-red-700 hover:bg-red-800 focus:ring-red-600 border-red-700'
     : 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500';
 
   return (
@@ -85,7 +85,7 @@ const CategoryDeleteModal: React.FC<CategoryDeleteModalProps> = ({
         ></div>
 
         {/* Modal */}
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
               {/* Icon */}
@@ -107,7 +107,7 @@ const CategoryDeleteModal: React.FC<CategoryDeleteModalProps> = ({
                   {title}
                 </h3>
                 <div className="mt-2">
-                  <p className="text-sm text-gray-500 mb-3">
+                  <p className={`text-sm mb-3 ${isHardDelete ? 'text-red-700 font-semibold' : 'text-gray-500'}`}>
                     {description}
                   </p>
                   
@@ -136,14 +136,19 @@ const CategoryDeleteModal: React.FC<CategoryDeleteModalProps> = ({
                   </div>
 
                   {isHardDelete && (
-                    <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="mt-4 p-4 bg-red-100 border-2 border-red-300 rounded-lg">
+                      <div className="flex items-start gap-3">
+                        <svg className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                         </svg>
-                        <p className="text-sm text-red-800">
-                          <strong>Uyarı:</strong> Bu işlem geri alınamaz. Kategori ve ilişkili tüm veriler kalıcı olarak silinecektir.
-                        </p>
+                        <div>
+                          <p className="text-base font-bold text-red-900 mb-2">
+                            ⚠️ UYARI: Bu işlem geri alınamaz!
+                          </p>
+                          <p className="text-sm text-red-800">
+                            Kategori ve ilişkili tüm veriler kalıcı olarak silinecektir. Bu işlem geri döndürülemez.
+                          </p>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -158,7 +163,7 @@ const CategoryDeleteModal: React.FC<CategoryDeleteModalProps> = ({
               type="button"
               onClick={handleConfirm}
               disabled={isDeleting || loading}
-              className={`w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${buttonColor}`}
+              className={`w-full inline-flex justify-center rounded-lg border border-transparent shadow-lg px-6 py-3 text-base font-bold text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 ${buttonColor}`}
             >
               {isDeleting || loading ? (
                 <div className="flex items-center gap-2">

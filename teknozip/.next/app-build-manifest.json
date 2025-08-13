@@ -21,11 +21,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
-    ],
     "/auth/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -46,35 +41,20 @@
       "static/chunks/main-app.js",
       "static/chunks/app/admin/dashboard/page.js"
     ],
-    "/admin/categories/page": [
+    "/admin/companies/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/categories/page.js"
+      "static/chunks/app/admin/companies/page.js"
     ],
-    "/403/page": [
+    "/admin/institutions/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/403/page.js"
+      "static/chunks/app/admin/institutions/page.js"
     ],
-    "/employee/layout": [
+    "/auth/register-institution/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/employee/layout.js"
-    ],
-    "/employee/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/employee/loading.js"
-    ],
-    "/employee/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/employee/dashboard/page.js"
-    ],
-    "/employee/profile/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/employee/profile/page.js"
+      "static/chunks/app/auth/register-institution/page.js"
     ]
   }
 }

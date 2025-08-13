@@ -15,7 +15,7 @@ export default function ForbiddenPage() {
           router.push('/admin/dashboard');
           break;
         case 'companyadmin':
-          router.push('/company-admin/dashboard');
+          router.push('/companyadmin/dashboard');
           break;
         case 'employee':
           router.push('/employee/dashboard');

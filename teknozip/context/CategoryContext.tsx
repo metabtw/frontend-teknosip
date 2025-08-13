@@ -80,6 +80,7 @@ interface CategoryContextType {
   createCategory: (categoryData: { name: string; description?: string }) => Promise<void>;
   updateCategory: (categoryData: { categoryId: string; name: string; description?: string }) => Promise<void>;
   deleteCategory: (categoryId: string, isHardDelete?: boolean) => Promise<void>;
+  activateCategory: (categoryId: string) => Promise<void>;
   
   // UI helpers
   clearError: () => void;
@@ -126,7 +127,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   const canCreateCategory = () => {
     console.log('Checking canCreateCategory - User:', user);
     console.log('User role:', user?.role);
-    const canCreate = user?.role === 'super-admin';
+    const canCreate = user?.role === 'superadmin';
     console.log('Can create category:', canCreate);
     return canCreate;
   };
@@ -134,7 +135,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
   const canDeleteCategory = () => {
     console.log('Checking canDeleteCategory - User:', user);
     console.log('User role:', user?.role);
-    const canDelete = user?.role === 'super-admin';
+    const canDelete = user?.role === 'superadmin';
     console.log('Can delete category:', canDelete);
     return canDelete;
   };
@@ -259,10 +260,37 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
       
       // Refresh categories list after successful deletion
       await fetchCategories();
+      await fetchInactiveCategories();
       
       dispatch({ type: 'SET_LOADING', payload: false });
     } catch (error: any) {
       console.error('Delete category error:', error);
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+      dispatch({ type: 'SET_LOADING', payload: false });
+      throw error; // Re-throw to allow UI to handle success/error states
+    }
+  };
+
+  // Activate category (Super Admin only)
+  const activateCategory = async (categoryId: string): Promise<void> => {
+    try {
+      // Check permissions
+      if (!canDeleteCategory()) {
+        throw new Error('Bu işlem için yetkiniz bulunmamaktadır. Sadece süper yöneticiler kategori aktif hale getirebilir.');
+      }
+
+      dispatch({ type: 'SET_LOADING', payload: true });
+      dispatch({ type: 'SET_ERROR', payload: null });
+      
+      await CategoryService.activateCategory(categoryId);
+      
+      // Refresh categories list after successful activation
+      await fetchCategories();
+      await fetchInactiveCategories();
+      
+      dispatch({ type: 'SET_LOADING', payload: false });
+    } catch (error: any) {
+      console.error('Activate category error:', error);
       dispatch({ type: 'SET_ERROR', payload: error.message });
       dispatch({ type: 'SET_LOADING', payload: false });
       throw error; // Re-throw to allow UI to handle success/error states
@@ -287,6 +315,7 @@ export const CategoryProvider = ({ children }: { children: ReactNode }) => {
     createCategory,
     updateCategory,
     deleteCategory,
+    activateCategory,
     clearError,
     clearSelectedCategory,
     canCreateCategory,

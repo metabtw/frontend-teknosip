@@ -22,7 +22,8 @@ export class CategoryService {
     CREATE: '/Category/CreateCategory',
     UPDATE: '/Category/UpdateCategory',
     DELETE: '/Category/DeleteCategory',
-    HARD_DELETE: '/Category/HardDeleteCategory'
+    HARD_DELETE: '/Category/HardDeleteCategory',
+    ACTIVATE: '/Category/ActivateCategory'
   } as const;
 
   /**
@@ -217,7 +218,8 @@ export class CategoryService {
       }
 
       const response: CategoryDeleteResponse = await apiClient.delete(
-        `${this.ENDPOINTS.DELETE}?id=${encodeURIComponent(categoryId)}`
+        this.ENDPOINTS.DELETE,
+        { categoryId: categoryId }  // Body olarak gönder
       );
       
       if (!response.isSuccess) {
@@ -251,7 +253,8 @@ export class CategoryService {
       }
 
       const response: CategoryDeleteResponse = await apiClient.delete(
-        `${this.ENDPOINTS.HARD_DELETE}?id=${encodeURIComponent(categoryId)}`
+        this.ENDPOINTS.HARD_DELETE,
+        { categoryId: categoryId }  // Body olarak gönder
       );
       
       if (!response.isSuccess) {
@@ -270,6 +273,52 @@ export class CategoryService {
       }
       
       throw new Error(error.message || 'Kategori kalıcı olarak silinirken hata oluştu');
+    }
+  }
+
+  /**
+   * Activate category (Super Admin only)
+   * @param categoryId - Category ID to activate
+   * @returns Promise<void>
+   */
+  /**
+   * Activate category (Super Admin only)
+   * @param categoryId - Category ID to activate
+   * @returns Promise<void>
+   */
+  static async activateCategory(categoryId: string): Promise<void> {
+    try {
+      if (!categoryId) {
+        throw new Error('Kategori ID gereklidir');
+      }
+
+      console.log('Activating category:', categoryId);
+
+      const response: CategoryUpdateResponse = await apiClient.put(
+        this.ENDPOINTS.ACTIVATE,
+        {
+          categoryId: categoryId
+        }
+      );
+      
+      console.log('Activate category response:', response);
+      
+      if (!response.isSuccess) {
+        throw new Error(response.message || 'Kategori aktif hale getirilirken hata oluştu');
+      }
+    } catch (error: any) {
+      console.error('Activate category error:', error);
+      
+      // Handle specific authorization errors
+      if (error.message.includes('403') || error.message.includes('yetki')) {
+        throw new Error('Bu işlem için yetkiniz bulunmamaktadır. Sadece süper yöneticiler kategori aktif hale getirebilir.');
+      }
+      
+      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        throw new Error('Oturum süresi dolmuş. Lütfen tekrar giriş yapın.');
+      }
+      
+      throw new Error(error.message || 'Kategori aktif hale getirilirken hata oluştu');
     }
   }
 }

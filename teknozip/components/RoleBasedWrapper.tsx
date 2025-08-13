@@ -15,7 +15,7 @@ const RoleBasedWrapper = ({
   allowedRoles, 
   fallbackPath = '/403' 
 }: RoleBasedWrapperProps) => {
-  const { user, isLoading } = useAuth();
+  const { user, loading: isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {

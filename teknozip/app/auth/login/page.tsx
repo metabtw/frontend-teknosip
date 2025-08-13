@@ -123,13 +123,18 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center space-y-3">
           <p className="text-gray-600">
-            Hesabınız yok mu?{' '}
-            <a href="/auth/register" className="text-blue-600 hover:text-blue-800 font-medium">
-              Şirketinizi Kaydedin
-            </a>
+            Hesabınız yok mu?
           </p>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <a href="/auth/register" className="text-blue-600 hover:text-blue-800 font-medium px-4 py-2 border border-blue-600 rounded-lg hover:bg-blue-50 transition duration-200">
+              Şirket Kaydı
+            </a>
+            <a href="/auth/register-institution" className="text-green-600 hover:text-green-800 font-medium px-4 py-2 border border-green-600 rounded-lg hover:bg-green-50 transition duration-200">
+              Kurum Kaydı
+            </a>
+          </div>
         </div>
       </div>
       </div>

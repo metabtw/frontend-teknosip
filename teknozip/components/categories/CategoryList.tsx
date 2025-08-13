@@ -7,7 +7,9 @@ interface CategoryListProps {
   categories: CategoryDto[];
   loading: boolean;
   onEdit: (category: CategoryDto) => void;
-  onDelete: (category: CategoryDto, type: 'soft' | 'hard') => void;
+  onSoftDelete: (category: CategoryDto) => void;
+  onHardDelete: (category: CategoryDto) => void;
+  onActivate?: (category: CategoryDto) => void;
   showInactive?: boolean;
   canEdit: boolean;
   canDelete: boolean;
@@ -17,7 +19,9 @@ const CategoryList: React.FC<CategoryListProps> = ({
   categories,
   loading,
   onEdit,
-  onDelete,
+  onSoftDelete,
+  onHardDelete,
+  onActivate,
   showInactive = false,
   canEdit,
   canDelete
@@ -65,10 +69,9 @@ const CategoryList: React.FC<CategoryListProps> = ({
       {/* Table Header */}
       <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
         <div className="grid grid-cols-12 gap-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-          <div className="col-span-4">Kategori Adı</div>
-          <div className="col-span-5">Açıklama</div>
-          <div className="col-span-2">ID</div>
-          <div className="col-span-1 text-right">İşlemler</div>
+          <div className="col-span-6">Kategori Adı</div>
+          <div className="col-span-4">Açıklama</div>
+          <div className="col-span-2 text-right">İşlemler</div>
         </div>
       </div>
 
@@ -78,7 +81,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
           <div key={category.categoryId} className="px-6 py-4 hover:bg-gray-50 transition-colors">
             <div className="grid grid-cols-12 gap-4 items-center">
               {/* Category Name */}
-              <div className="col-span-4">
+              <div className="col-span-6">
                 <div className="flex items-center">
                   <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                     <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,7 +95,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
               </div>
 
               {/* Description */}
-              <div className="col-span-5">
+              <div className="col-span-4">
                 <p className="text-sm text-gray-600 truncate" title={category.description || 'Açıklama yok'}>
                   {category.description || (
                     <span className="italic text-gray-400">Açıklama yok</span>
@@ -100,15 +103,8 @@ const CategoryList: React.FC<CategoryListProps> = ({
                 </p>
               </div>
 
-              {/* Category ID */}
-              <div className="col-span-2">
-                <p className="text-xs text-gray-500 font-mono truncate" title={category.categoryId}>
-                  {category.categoryId.substring(0, 8)}...
-                </p>
-              </div>
-
               {/* Actions */}
-              <div className="col-span-1 text-right">
+              <div className="col-span-2 text-right">
                 <div className="flex items-center justify-end gap-2">
                   {/* Edit Button */}
                   {canEdit && (
@@ -123,23 +119,38 @@ const CategoryList: React.FC<CategoryListProps> = ({
                     </button>
                   )}
 
-                  {/* Delete Buttons - Only for Super Admin */}
+                  {/* Action Buttons - Only for Super Admin */}
                   {canDelete && (
                     <>
-                      {/* Soft Delete */}
-                      <button
-                        onClick={() => onDelete(category, 'soft')}
-                        className="p-1 text-gray-400 hover:text-yellow-600 transition-colors"
-                        title="Pasif Yap"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                        </svg>
-                      </button>
+                      {/* Activate Button - Only show for inactive categories */}
+                      {showInactive && onActivate && (
+                        <button
+                          onClick={() => onActivate(category)}
+                          className="p-1 text-gray-400 hover:text-green-600 transition-colors"
+                          title="Aktif Yap"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </button>
+                      )}
+
+                      {/* Soft Delete - Only show for active categories */}
+                      {!showInactive && (
+                        <button
+                          onClick={() => onSoftDelete(category)}
+                          className="p-1.5 text-orange-500 hover:text-orange-700 hover:bg-orange-50 rounded transition-colors"
+                          title="Pasif Yap"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </button>
+                      )}
 
                       {/* Hard Delete */}
                       <button
-                        onClick={() => onDelete(category, 'hard')}
+                        onClick={() => onHardDelete(category)}
                         className="p-1 text-gray-400 hover:text-red-600 transition-colors"
                         title="Kalıcı Sil"
                       >
@@ -165,10 +176,10 @@ const CategoryList: React.FC<CategoryListProps> = ({
           
           {/* Legend for action buttons */}
           {(canEdit || canDelete) && (
-            <div className="flex items-center gap-4 text-xs text-gray-500">
+            <div className="flex items-center gap-6 text-xs text-gray-500">
               {canEdit && (
                 <div className="flex items-center gap-1">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                   <span>Düzenle</span>
@@ -176,14 +187,24 @@ const CategoryList: React.FC<CategoryListProps> = ({
               )}
               {canDelete && (
                 <>
+                  {showInactive && onActivate && (
+                    <div className="flex items-center gap-1">
+                      <svg className="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Aktif Yap</span>
+                    </div>
+                  )}
+                  {!showInactive && (
+                    <div className="flex items-center gap-1">
+                      <svg className="w-3 h-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Pasif Yap</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                    <span>Pasif Yap</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                     <span>Kalıcı Sil</span>

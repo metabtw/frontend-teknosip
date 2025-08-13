@@ -50,13 +50,13 @@ export default function TestRolePage() {
       { endpoint: 'public', expectedStatus: 200 },
       
       // Kullanıcı rolüne göre test senaryoları
-      ...(user?.role === 'super-admin' ? [
+      ...(user?.role === 'superadmin' ? [
         { endpoint: 'superadmin-only', expectedStatus: 200 },
         { endpoint: 'admin-only', expectedStatus: 200 },
         { endpoint: 'user-access', expectedStatus: 200 }
       ] : []),
       
-      ...(user?.role === 'company-admin' ? [
+      ...(user?.role === 'companyadmin' ? [
         { endpoint: 'superadmin-only', expectedStatus: 403 },
         { endpoint: 'admin-only', expectedStatus: 200 },
         { endpoint: 'user-access', expectedStatus: 200 }

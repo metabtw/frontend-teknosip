@@ -8,7 +8,7 @@ import { Toaster } from 'react-hot-toast';
 
 const CategoriesPage = () => {
   return (
-    <RoleBasedWrapper allowedRoles={['super-admin']}>
+    <RoleBasedWrapper allowedRoles={['superadmin']}>
       <CategoryProvider>
         <div className="min-h-screen bg-gray-50">
           {/* Page Header */}

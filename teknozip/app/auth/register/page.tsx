@@ -27,6 +27,7 @@ export default function RegisterPage() {
   });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -82,7 +83,7 @@ export default function RegisterPage() {
       const result = await registerCompany(formData);
 
       if (result?.isSuccess) {
-        router.push("/auth/login?registered=true");
+        setShowSuccessModal(true);
       } else {
         setError(
           result?.message ||
@@ -103,9 +104,15 @@ export default function RegisterPage() {
    
   
 
+  const handleModalClose = () => {
+    setShowSuccessModal(false);
+    router.push("/auth/login");
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="min-h-screen bg-gray-50">
-      <Header />
+    <>
+      <form onSubmit={handleSubmit} className="min-h-screen bg-gray-50">
+        <Header />
       <div className="max-w-7xl mx-auto p-6 my-8">
         <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">Şirket Kayıt Formu</h1>
         <div className="max-w-7xl mx-auto">
@@ -293,10 +300,36 @@ export default function RegisterPage() {
           disabled={isLoading}
           className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center text-lg font-semibold transition-colors duration-200 mt-8"
         >
-          {isLoading ? "Kayıt Olunuyor..." : "Kayıt Ol"}
+          {isLoading ? "Kaydediliyor..." : "Kayıt Ol"}
         </button>
         </div>
       </div>
-    </form>
+      </form>
+
+      {/* Başarı Modalı */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Kayıt Başarılı!</h3>
+              <p className="text-sm text-gray-500 mb-6">
+                Şirket kaydınız başarıyla alınmıştır. Süper admin tarafından onaylandıktan sonra sisteme giriş yapabileceksiniz.
+              </p>
+              <button
+                onClick={handleModalClose}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Tamam
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

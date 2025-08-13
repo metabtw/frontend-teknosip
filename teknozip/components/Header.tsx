@@ -10,8 +10,8 @@ export default function Header() {
 
   const getDashboardLink = () => {
     if (!user) return '/';
-    if (user.role === 'super-admin') return '/admin/dashboard';
-    if (user.role === 'company-admin') return '/company-admin/dashboard';
+    if (user.role === 'superadmin') return '/admin/dashboard';
+    if (user.role === 'companyadmin') return '/companyadmin/dashboard';
     if (user.role === 'employee') return '/employee/dashboard';
     return '/';
   };

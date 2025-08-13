@@ -45,7 +45,7 @@ class ApiClient {
     }
 
     if (response.status === 403) {
-      window.location.href = '/403';
+      // Don't automatically redirect, let the calling component handle it
       throw new Error('Bu işlem için yetkiniz bulunmamaktadır.');
     }
 
@@ -61,13 +61,11 @@ class ApiClient {
         console.log('Failed to parse error response:', parseError);
       }
       
-      console.error('API Error:', {
-        status: response.status,
-        statusText: response.statusText,
-        url: response.url,
-        errorData
-      });
-      throw new Error(errorData.message || `HTTP Error: ${response.status}`);
+      // Sessiz hata yönetimi - console.error yerine sadece throw
+      const errorMessage = (errorData as { message?: string }).message || 
+                          (errorData as { title?: string }).title ||
+                          `İşlem başarısız oldu (${response.status})`;
+      throw new Error(errorMessage);
     }
 
     const responseText = await response.text();
@@ -161,17 +159,32 @@ class ApiClient {
     return result;
   }
 
-  async delete(endpoint: string, retryCount = 0): Promise<any> {
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
+  async delete(endpoint: string, data?: any, retryCount = 0): Promise<any> {
+    const url = `${this.baseURL}${endpoint}`;
+    const headers = this.getAuthHeaders();
+
+    const requestOptions: RequestInit = {
       method: 'DELETE',
-      headers: this.getAuthHeaders()
+      headers
+    };
+
+    // Eğer data varsa body'ye ekle
+    if (data) {
+      requestOptions.body = JSON.stringify(data);
+    }
+
+    console.log('DELETE request:', {
+      url,
+      headers,
+      body: data ? JSON.stringify(data) : null
     });
 
+    const response = await fetch(url, requestOptions);
     const result = await this.handleResponse(response);
     
     // Eğer 401 hatası aldık ve refresh token başarılı olduysa, tekrar dene
     if (result === null && retryCount === 0) {
-      return this.delete(endpoint, 1);
+      return this.delete(endpoint, data, 1);
     }
 
     return result;

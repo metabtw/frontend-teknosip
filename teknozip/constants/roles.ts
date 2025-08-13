@@ -3,6 +3,6 @@ export enum Roles {
   USER = 'user',
   COMPANY = 'company',
   INSTITUTION = 'institution',
-  COMPANY_ADMIN = 'company-admin',
+  COMPANY_ADMIN = 'companyadmin',
   INSTITUTION_ADMIN = 'institution-admin'
 }

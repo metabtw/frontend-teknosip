@@ -8,7 +8,7 @@ type User = {
   id: string;
   name: string;
   email: string;
-  role: 'super-admin' | 'company-admin' | 'employee';
+  role: 'superadmin' | 'companyadmin' | 'employee';
   companyId?: string;
   companyName?: string;
   status?: 'approved' | 'pending' | 'rejected';
@@ -95,11 +95,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       switch (role) {
         case 1:
         case 'SuperAdmin':
-          role = 'super-admin';  // Backend: SuperAdmin=1 veya 'SuperAdmin'
+          role = 'superadmin';  // Backend: SuperAdmin=1 veya 'SuperAdmin'
           break;
         case 2:
         case 'Admin':
-          role = 'company-admin';  // Backend: Admin=2 veya 'Admin'
+          role = 'companyadmin';  // Backend: Admin=2 veya 'Admin'
           break;
         case 3:
         case 'User':
@@ -210,11 +210,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           
           // Role based routing
           switch (userData.role) {
-            case 'super-admin':
+            case 'superadmin':
               router.push('/admin/dashboard');
               break;
-            case 'company-admin':
-              router.push('/company-admin/dashboard');
+            case 'companyadmin':
+              router.push('/companyadmin/dashboard');
               break;
             case 'employee':
               router.push('/employee/dashboard');
@@ -228,7 +228,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           throw new Error('Kullanıcı bilgileri alınamadı');
         }
       } else {
-        throw new Error(response.message || 'Giriş başarısız');
+        // Onaylanmamış kullanıcı kontrolü
+        if (response.message && (response.message.includes('onay') || response.message.includes('admin'))) {
+          throw new Error('Hesabınız henüz süper admin tarafından onaylanmamıştır. Onay sürecinin tamamlanmasını bekleyiniz.');
+        }
+        throw new Error(response.message || 'Geçersiz kullanıcı adı veya şifre!');
       }
     } catch (error: any) {
       console.error('Login error:', error);
@@ -257,7 +261,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const addEmployee = async (employeeData: EmployeeRegistration) => {
     // Mock employee registration
     return new Promise<void>((resolve, reject) => {
-      if (!user || user.role !== 'company-admin') {
+      if (!user || user.role !== 'companyadmin') {
         reject(new Error('Çalışan ekleme yetkisi yok'));
         return;
       }

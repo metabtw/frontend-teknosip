@@ -22,6 +22,7 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showInactive = 
     createCategory,
     updateCategory,
     deleteCategory,
+    activateCategory,
     clearError,
     canCreateCategory,
     canDeleteCategory
@@ -30,6 +31,8 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showInactive = 
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryDto | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<CategoryDto | null>(null);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteType, setDeleteType] = useState<'soft' | 'hard'>('soft');
 
   // Load categories on component mount
@@ -70,20 +73,50 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showInactive = 
     }
   };
 
+  // Handle soft delete (deactivate)
+  const handleSoftDelete = async (category: CategoryDto) => {
+    setDeletingCategory(category);
+    setDeleteType('soft');
+    setIsDeleteModalOpen(true);
+  };
+
+  // Handle hard delete (permanent)
+  const handleHardDelete = async (category: CategoryDto) => {
+    setDeletingCategory(category);
+    setDeleteType('hard');
+    setIsDeleteModalOpen(true);
+  };
+
+  // Handle activate category
+  const handleActivate = async (category: CategoryDto) => {
+    try {
+      await activateCategory(category.categoryId);
+      toast.success('Kategori aktif hale getirildi');
+    } catch (error: any) {
+      console.error('Activate category error:', error);
+      toast.error(error.message || 'Kategori aktif hale getirilirken hata oluştu');
+    }
+  };
+
   // Handle delete category
-  const handleDeleteCategory = async () => {
+  const confirmDelete = async () => {
     if (!deletingCategory) return;
     
     try {
-      await deleteCategory(deletingCategory.categoryId, deleteType === 'hard');
-      setDeletingCategory(null);
+      const isHardDelete = deleteType === 'hard';
+      await deleteCategory(deletingCategory.categoryId, isHardDelete);
       
-      const message = deleteType === 'hard' 
-        ? 'Kategori kalıcı olarak silindi!' 
-        : 'Kategori pasif hale getirildi!';
-      toast.success(message);
+      const successMessage = isHardDelete 
+        ? 'Kategori kalıcı olarak silindi'
+        : 'Kategori pasif hale getirildi';
+      
+      toast.success(successMessage);
+      setIsDeleteModalOpen(false);
+      setDeletingCategory(null);
+      setDeleteType('soft');
     } catch (error: any) {
-      toast.error(error.message || 'Kategori silinirken hata oluştu');
+      console.error('Delete category error:', error);
+      toast.error(error.message || 'İşlem sırasında hata oluştu');
     }
   };
 
@@ -204,7 +237,9 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showInactive = 
         categories={categories}
         loading={state.loading}
         onEdit={handleEditClick}
-        onDelete={handleDeleteClick}
+        onSoftDelete={handleSoftDelete}
+        onHardDelete={handleHardDelete}
+        onActivate={showInactive ? handleActivate : undefined}
         showInactive={showInactive}
         canEdit={true} // All authenticated users can edit
         canDelete={canDeleteCategory()}
@@ -235,17 +270,21 @@ const CategoryManagement: React.FC<CategoryManagementProps> = ({ showInactive = 
         />
       )}
 
-      {/* Delete Confirmation Modal */}
-      {deletingCategory && (
-        <CategoryDeleteModal
-          isOpen={!!deletingCategory}
-          onClose={() => setDeletingCategory(null)}
-          onConfirm={handleDeleteCategory}
-          category={deletingCategory}
-          deleteType={deleteType}
-          loading={state.loading}
-        />
-      )}
+      {/* Delete Modal */}
+        {isDeleteModalOpen && deletingCategory && (
+          <CategoryDeleteModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => {
+              setIsDeleteModalOpen(false);
+              setDeletingCategory(null);
+              setDeleteType('soft');
+            }}
+            onConfirm={confirmDelete}
+            category={deletingCategory}
+            deleteType={deleteType}
+            loading={state.loading}
+          />
+        )}
     </div>
   );
 };

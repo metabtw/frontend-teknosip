@@ -5,6 +5,7 @@ import RoleBasedWrapper from '@/components/admin/RoleBasedWrapper';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import AdminLayout from '@/components/admin/AdminLayout';
 import { Icon } from '@iconify/react';
 
 export default function SupportRequestsPage() {
@@ -98,68 +99,70 @@ export default function SupportRequestsPage() {
   };
 
   return (
-    <RoleBasedWrapper allowedRoles={['super-admin']}>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Destek Talepleri</h1>
-        </div>
+    <RoleBasedWrapper allowedRoles={['superadmin']}>
+      <AdminLayout>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold">Destek Talepleri</h1>
+          </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Tüm Talepler</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Talep</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Şirket/Kurum</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İletişim</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Öncelik</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {supportRequests.map((request) => (
-                    <tr key={request.id} className="hover:bg-gray-50 cursor-pointer">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center">
-                          <Icon icon={getTypeIcon(request.type)} className="w-8 h-8 text-gray-500 mr-3" />
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">{request.title}</div>
-                            <div className="text-sm text-gray-500 capitalize">{request.type}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{request.company}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm">
-                          <div className="font-medium">{request.contact.name}</div>
-                          <div className="text-gray-500">{request.contact.email}</div>
-                          <div className="text-gray-500">{request.contact.phone}</div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        {getPriorityBadge(request.priority)}
-                      </td>
-                      <td className="px-6 py-4">
-                        {getStatusBadge(request.status)}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">{request.submittedAt}</div>
-                      </td>
+          <Card>
+            <CardHeader>
+              <CardTitle>Tüm Talepler</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Talep</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Şirket/Kurum</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İletişim</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Öncelik</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {supportRequests.map((request) => (
+                      <tr key={request.id} className="hover:bg-gray-50 cursor-pointer">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center">
+                            <Icon icon={getTypeIcon(request.type)} className="w-8 h-8 text-gray-500 mr-3" />
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">{request.title}</div>
+                              <div className="text-sm text-gray-500 capitalize">{request.type}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm font-medium text-gray-900">{request.company}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm">
+                            <div className="font-medium">{request.contact.name}</div>
+                            <div className="text-gray-500">{request.contact.email}</div>
+                            <div className="text-gray-500">{request.contact.phone}</div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          {getPriorityBadge(request.priority)}
+                        </td>
+                        <td className="px-6 py-4">
+                          {getStatusBadge(request.status)}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900">{request.submittedAt}</div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </AdminLayout>
     </RoleBasedWrapper>
   );
 }
